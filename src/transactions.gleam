@@ -193,11 +193,11 @@ pub fn report_csv(transactions: List(Transaction)) {
   |> Ok
 }
 
-type GenericReport {
+pub type GenericReport {
   GenericReport(headers: List(String), rows: List(List(String)))
 }
 
-type ReportColumn {
+pub type ReportColumn {
   ColFY
   ColAsset
   ColBuyDate
@@ -214,7 +214,7 @@ type ReportColumn {
   ColCGTDiscount
 }
 
-const report_columns = [
+pub const report_columns = [
   ColFY,
   ColSaleDate,
   ColAsset,
@@ -231,7 +231,7 @@ const report_columns = [
   ColCGTDiscount,
 ]
 
-fn generic_report(transactions: List(Transaction)) {
+pub fn generic_report(transactions: List(Transaction)) {
   use _ <- result.try(assert_no_duplicate_ids(transactions))
 
   use allocations <- result.try(
@@ -250,7 +250,7 @@ fn generic_report(transactions: List(Transaction)) {
   Ok(report)
 }
 
-fn header_to_label(column: ReportColumn) {
+pub fn header_to_label(column: ReportColumn) {
   case column {
     ColBuyDate -> "Buy date"
     ColBuyId -> "Buy Id"
