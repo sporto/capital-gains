@@ -51,6 +51,12 @@ pub fn format_amount_test() {
   assert transactions.format_amount(-600.1234) == "-600.123"
 }
 
+pub fn parse_date_test() {
+  assert transactions.parse_date("1/1/2020") == Ok(date.literal("2020-01-01"))
+  assert transactions.parse_date("1/01/2020") == Ok(date.literal("2020-01-01"))
+  assert transactions.parse_date("01/01/2020") == Ok(date.literal("2020-01-01"))
+}
+
 fn feb_1() {
   date.literal("2020-02-01")
 }

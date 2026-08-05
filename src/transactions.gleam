@@ -708,7 +708,7 @@ fn date_parse_error_to_label(error: DateParseError) {
   }
 }
 
-fn parse_date(input: String) -> outcome.Outcome(Date, String) {
+pub fn parse_date(input: String) -> outcome.Outcome(Date, String) {
   date.parse(input, tempo.CustomDate("DD/MM/YYYY"))
   |> result.or(date.parse(input, tempo.CustomDate("D/MM/YYYY")))
   |> result.or(date.parse(input, tempo.CustomDate("D/M/YYYY")))
