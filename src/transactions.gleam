@@ -280,7 +280,7 @@ fn assert_no_duplicate_ids(transactions: List(Transaction)) {
   case id_count_check == id_count {
     True -> Ok(transactions)
     False -> {
-      Error("Duplicate ids found ") |> outcome.outcome
+      Error("Duplicate ids found") |> outcome.outcome
     }
   }
 }

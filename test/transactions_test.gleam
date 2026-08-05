@@ -30,7 +30,7 @@ pub fn order_matters_test() {
     |> transactions.generic_report
     |> outcome.remove_problem
 
-  assert actual == Error("Buy must be before")
+  assert actual == Error("Buy must be before sale")
 }
 
 pub fn duplicate_ids_test() {
@@ -46,5 +46,5 @@ pub fn duplicate_ids_test() {
     |> transactions.generic_report
     |> outcome.remove_problem
 
-  assert actual == Error("Duplicate ids")
+  assert actual == Error("Duplicate ids found")
 }

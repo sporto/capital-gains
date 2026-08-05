@@ -4,11 +4,15 @@ import transactions/allocate.{Allocated}
 import transactions/transaction.{Buy, Sale, Transaction}
 import youid/uuid
 
+fn jan_1() {
+  date.literal("2020/01/01")
+}
+
 fn fixture_transaction() {
   Transaction(
     asset: "XRP",
     allocated: 0.0,
-    date: date.literal("2020-01-01"),
+    date: jan_1(),
     fee: 1.0,
     id: uuid.v4_string(),
     kind: Buy,
@@ -58,7 +62,7 @@ pub fn sale_buy_gains_test() {
     Transaction(
       ..fixture_sale(),
       price_each: 2.0,
-      date: date.literal("202-01-03"),
+      date: date.literal("2020-01-03"),
     )
 
   let actual = allocate.process_sale_and_buy(buy:, sale:)
@@ -99,7 +103,7 @@ pub fn sale_buy_bad_dates_test() {
 
   let actual = allocate.process_sale_and_buy(buy:, sale:)
 
-  assert actual == allocate.ESaleIsEarlier("")
+  assert actual == allocate.ESaleIsEarlier
 }
 
 /// ***************************

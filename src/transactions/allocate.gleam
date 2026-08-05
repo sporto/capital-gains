@@ -55,7 +55,7 @@ fn require_next_transaction(
   next,
 ) {
   case transactions {
-    [] -> Error("Not enough transactions " <> context)
+    [] -> Error("Not enough transactions")
     [first, ..rest] -> next(first, rest)
   }
 }
@@ -152,9 +152,9 @@ fn process_buy(
     EBadSaleDate -> {
       Error("Could not parse sale date")
     }
-    ESaleIsEarlier(context) -> {
+    ESaleIsEarlier -> {
       // The list must be sorted prior to this
-      Error("Transactions are not sorted by date  " <> context)
+      Error("Buy must be before sale")
     }
     Allocated(updated_buy, updated_sale, allocation) -> {
       let next_allocations = list.append(allocations, [allocation])
@@ -174,7 +174,7 @@ fn process_buy(
 pub type AllocationOutcome {
   EInvalidKind
   EMismatchAssets
-  ESaleIsEarlier(context: String)
+  ESaleIsEarlier
   EBadBuyDate
   EBadSaleDate
   BuyConsumed
@@ -206,11 +206,7 @@ pub fn process_sale_and_buy(
 
   use <- given.that(
     date.is_earlier_or_equal(buy.date, sale.date),
-    else_return: fn() {
-      ESaleIsEarlier(
-        "asset: " <> buy.asset <> " buy_id: " <> buy.id <> "sale_id:" <> sale.id,
-      )
-    },
+    else_return: fn() { ESaleIsEarlier },
   )
 
   let available = buy.qty -. buy.allocated
