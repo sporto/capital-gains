@@ -1,5 +1,5 @@
+import cg/transaction.{type Transaction, Buy, Sale, Transaction}
 import tempo/date
-import transactions/transaction.{type Transaction, Buy, Sale, Transaction}
 import youid/uuid
 
 pub fn fixture_transaction() {

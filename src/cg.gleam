@@ -1,4 +1,8 @@
 import argv
+import cg/allocate
+import cg/allocation.{type Allocation}
+import cg/date
+import cg/transaction.{type Transaction, Buy, Sale, Transaction}
 import clip.{type Command}
 import clip/help
 import clip/opt.{type Opt}
@@ -15,10 +19,6 @@ import gleam/string
 import gsv
 import outcome.{type Outcome}
 import simplifile
-import transactions/allocate
-import transactions/allocation.{type Allocation}
-import transactions/date
-import transactions/transaction.{type Transaction, Buy, Sale, Transaction}
 
 type CliArgs {
   CliArgs(file: String)

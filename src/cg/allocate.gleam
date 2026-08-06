@@ -1,11 +1,11 @@
+import cg/allocation.{type Allocation, Allocation}
+import cg/transaction.{type Transaction, Buy, Transaction}
 import given
 import gleam/float
 import gleam/list
 import gleam/result
 import gleam/set
 import tempo/date
-import transactions/allocation.{type Allocation, Allocation}
-import transactions/transaction.{type Transaction, Buy, Transaction}
 import youid/uuid
 
 type TransactionsByAsset {

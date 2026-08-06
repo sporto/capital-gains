@@ -1,7 +1,7 @@
+import cg/allocate.{Allocated}
+import cg/transaction.{Buy, Sale, Transaction}
 import gleam/list
 import tempo/date
-import transactions/allocate.{Allocated}
-import transactions/transaction.{Buy, Sale, Transaction}
 import youid/uuid
 
 fn jan_1() {

@@ -1,4 +1,4 @@
-import transactions/date.{type Date}
+import cg/date.{type Date}
 import youid/uuid
 
 pub type Allocation {

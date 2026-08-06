@@ -1,8 +1,8 @@
+import cg
 import fixtures
 import gleeunit
 import outcome
 import tempo/date
-import transactions
 
 pub fn main() -> Nil {
   gleeunit.main()
@@ -27,7 +27,7 @@ pub fn order_matters_test() {
         |> fixtures.w_id("b")
         |> fixtures.w_date(feb_2()),
     ]
-    |> transactions.generic_report
+    |> cg.generic_report
     |> outcome.remove_problem
 
   assert actual == Error("Buy must be before sale")
@@ -43,7 +43,7 @@ pub fn duplicate_ids_test() {
         |> fixtures.w_id("a")
         |> fixtures.w_date(feb_2()),
     ]
-    |> transactions.generic_report
+    |> cg.generic_report
     |> outcome.remove_problem
 
   assert actual == Error("Duplicate ids found")
