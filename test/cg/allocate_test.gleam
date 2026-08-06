@@ -1,6 +1,7 @@
 import cg/allocate.{Allocated}
 import cg/transaction.{Buy, Sale, Transaction}
 import gleam/list
+import outcome
 import tempo/date
 import youid/uuid
 
@@ -183,7 +184,9 @@ pub fn process_buy_insufficient_test() {
     sale1,
   ]
 
-  let result = allocate.process(ts)
+  let result =
+    allocate.process(ts)
+    |> outcome.remove_problem
 
   assert result == Error("Not enough transactions")
 }
@@ -201,7 +204,9 @@ pub fn process_not_enough_buys_test() {
     sale2,
   ]
 
-  let result = allocate.process(ts)
+  let result =
+    allocate.process(ts)
+    |> outcome.remove_problem
 
   assert result == Error("Not enough transactions")
 }

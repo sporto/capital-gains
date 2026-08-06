@@ -231,13 +231,12 @@ pub const report_columns = [
   ColCGTDiscount,
 ]
 
-pub fn generic_report(transactions: List(Transaction)) {
+pub fn generic_report(
+  transactions: List(Transaction),
+) -> Outcome(GenericReport, String) {
   use _ <- result.try(assert_no_duplicate_ids(transactions))
 
-  use allocations <- result.try(
-    allocate.process(transactions)
-    |> outcome.outcome,
-  )
+  use allocations <- result.try(allocate.process(transactions))
 
   let headers = report_columns |> list.map(header_to_label)
 

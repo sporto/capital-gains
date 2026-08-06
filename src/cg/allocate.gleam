@@ -5,6 +5,7 @@ import gleam/float
 import gleam/list
 import gleam/result
 import gleam/set
+import outcome.{type Outcome}
 import tempo/date
 import youid/uuid
 
@@ -18,7 +19,7 @@ type TransactionsByAsset {
 
 pub fn process(
   transactions: List(Transaction),
-) -> Result(List(Allocation), String) {
+) -> Outcome(List(Allocation), String) {
   let assets =
     transactions
     |> list.map(fn(t) { t.asset })
@@ -40,7 +41,7 @@ pub fn process(
 
 fn process_asset(
   data: TransactionsByAsset,
-) -> Result(List(Allocation), String) {
+) -> Outcome(List(Allocation), String) {
   process_next_sale(
     asset: data.asset,
     remaining_buys: data.buys,
@@ -49,13 +50,9 @@ fn process_asset(
   )
 }
 
-fn require_next_transaction(
-  transactions: List(Transaction),
-  context: String,
-  next,
-) {
+fn require_next_transaction(transactions: List(Transaction), next) {
   case transactions {
-    [] -> Error("Not enough transactions")
+    [] -> Error("Not enough transactions") |> outcome.outcome
     [first, ..rest] -> next(first, rest)
   }
 }
@@ -65,7 +62,7 @@ fn process_next_sale(
   remaining_buys remaining_buys: List(Transaction),
   remaining_sales remaining_sales: List(Transaction),
   allocations allocations: List(Allocation),
-) -> Result(List(Allocation), String) {
+) -> Outcome(List(Allocation), String) {
   case remaining_sales {
     [] -> Ok(allocations)
     [current_sale, ..rest] ->
@@ -85,7 +82,7 @@ fn process_sale_next_buy(
   current_sale current_sale: Transaction,
   remaining_buys remaining_buys: List(Transaction),
   remaining_sales remaining_sales: List(Transaction),
-) -> Result(List(Allocation), String) {
+) -> Outcome(List(Allocation), String) {
   use <- given.that(
     current_sale.allocated <. current_sale.qty,
     else_return: fn() {
@@ -94,10 +91,7 @@ fn process_sale_next_buy(
     },
   )
 
-  use current_buy, rest_buys <- require_next_transaction(
-    remaining_buys,
-    "Processing " <> asset,
-  )
+  use current_buy, rest_buys <- require_next_transaction(remaining_buys)
 
   process_buy(
     allocations:,
@@ -116,9 +110,9 @@ fn process_buy(
   current_sale current_sale: Transaction,
   remaining_buys remaining_buys: List(Transaction),
   remaining_sales remaining_sales: List(Transaction),
-) -> Result(List(Allocation), String) {
+) -> Outcome(List(Allocation), String) {
   use <- given.not(asset == current_sale.asset, return: fn() {
-    Error("Sale has wrong asset")
+    Error("Sale has wrong asset") |> outcome.outcome
   })
 
   let output = process_sale_and_buy(buy: current_buy, sale: current_sale)
@@ -144,17 +138,17 @@ fn process_buy(
       )
     }
     EInvalidKind -> {
-      Error("Transactions have the wrong kind")
+      Error("Transactions have the wrong kind") |> outcome.outcome
     }
     EBadBuyDate -> {
-      Error("Could not parse buy date")
+      Error("Could not parse buy date") |> outcome.outcome
     }
     EBadSaleDate -> {
-      Error("Could not parse sale date")
+      Error("Could not parse sale date") |> outcome.outcome
     }
     ESaleIsEarlier -> {
       // The list must be sorted prior to this
-      Error("Buy must be before sale")
+      Error("Buy must be before sale") |> outcome.outcome
     }
     Allocated(updated_buy, updated_sale, allocation) -> {
       let next_allocations = list.append(allocations, [allocation])
