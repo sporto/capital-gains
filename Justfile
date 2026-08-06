@@ -7,5 +7,7 @@ review:
 help:
 	gleam run -- --help
 
+input := env("INPUT")
+
 run:
-	gleam run -- --file seb2
+	gleam run -- --file {{input}}
