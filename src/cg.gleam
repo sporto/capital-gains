@@ -50,7 +50,7 @@ pub fn main() -> Nil {
 
   case process_file(in_path, out_path) {
     Ok(message) -> io.println(message)
-    Error(e) -> io.println_error(outcome.print_line(e, function.identity))
+    Error(e) -> io.println_error(outcome.pretty_print(e, function.identity))
   }
 }
 
