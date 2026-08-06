@@ -42,6 +42,8 @@ pub fn process(
 fn process_asset(
   data: TransactionsByAsset,
 ) -> Outcome(List(Allocation), String) {
+  use <- outcome.with_context("@process_asset " <> data.asset)
+
   process_next_sale(
     asset: data.asset,
     remaining_buys: data.buys,
@@ -83,6 +85,10 @@ fn process_sale_next_buy(
   remaining_buys remaining_buys: List(Transaction),
   remaining_sales remaining_sales: List(Transaction),
 ) -> Outcome(List(Allocation), String) {
+  use <- outcome.with_context(
+    "@process_sale_next_buy current_sale " <> current_sale.id,
+  )
+
   use <- given.that(
     current_sale.allocated <. current_sale.qty,
     else_return: fn() {
@@ -111,6 +117,8 @@ fn process_buy(
   remaining_buys remaining_buys: List(Transaction),
   remaining_sales remaining_sales: List(Transaction),
 ) -> Outcome(List(Allocation), String) {
+  use <- outcome.with_context("@process_buy current_buy " <> current_buy.id)
+
   use <- given.not(asset == current_sale.asset, return: fn() {
     Error("Sale has wrong asset") |> outcome.outcome
   })
