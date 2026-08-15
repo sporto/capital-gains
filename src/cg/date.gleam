@@ -1,4 +1,5 @@
 import gleam/int
+import gleam/order
 import gleam/result
 import outcome
 import tempo
@@ -23,6 +24,10 @@ fn describe_date_parse_error(error: error.DateParseError) {
     error.DateInvalidFormat(input) -> "Invalid date format " <> input
     error.DateOutOfBounds(input, _) -> "Date out of bounds " <> input
   }
+}
+
+pub fn compare(a: Date, b: Date) -> order.Order {
+  date.compare(a, b)
 }
 
 pub fn to_string(date: Date) -> String {

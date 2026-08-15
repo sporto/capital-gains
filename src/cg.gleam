@@ -14,7 +14,6 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/result
-import gleam/set
 import gleam/string
 import gsv
 import outcome.{type Outcome}
@@ -47,6 +46,10 @@ pub fn main() -> Nil {
 
   let in_path = args.file <> ".csv"
   let out_path = args.file <> "_out.csv"
+
+  echo "Processing"
+  echo in_path
+  // echo out_path
 
   case process_file(in_path, out_path) {
     Ok(message) -> io.println(message)
@@ -195,7 +198,7 @@ fn parse_int(input: String) {
 fn kind_from_code(code: String) {
   case string.uppercase(code) {
     "BUY" -> Ok(Buy)
-    "SALE" -> Ok(Sale)
+    "SALE" | "SELL" -> Ok(Sale)
     _ -> Error("Invalid transaction code " <> code)
   }
 }
@@ -257,6 +260,7 @@ pub fn generic_report(
 
   let rows =
     allocations
+    |> list.sort(fn(a, b) { date.compare(a.sale_date, b.sale_date) })
     |> list.map(sale_allocation_to_report_line)
 
   let report = GenericReport(headers:, rows:)
@@ -288,13 +292,19 @@ fn assert_no_duplicate_ids(transactions: List(Transaction)) {
     transactions
     |> list.map(fn(t) { t.id })
 
-  let id_count = list.length(ids)
-  let id_count_check = set.from_list(ids) |> set.size
+  let grouped = list.group(ids, function.identity)
 
-  case id_count_check == id_count {
+  let duplicated =
+    dict.filter(grouped, fn(_key, value) { list.length(value) > 1 })
+
+  case dict.size(duplicated) > 0 {
     True -> Ok(transactions)
     False -> {
-      Error("Duplicate ids found") |> outcome.outcome
+      let keys =
+        dict.keys(duplicated)
+        |> string.join(", ")
+
+      Error("Duplicate ids " <> keys) |> outcome.outcome
     }
   }
 }
