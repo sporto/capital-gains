@@ -72,6 +72,8 @@ fn read_input(file_path: String) -> Outcome(List(Transaction), String) {
 }
 
 fn parse_input(content: String) {
+  let content = remove_empty_initial_grapheme(content)
+
   use csv <- result.try(
     gsv.to_dicts(content, ",")
     |> result.replace_error("Unable to parse CSV")
@@ -81,6 +83,19 @@ fn parse_input(content: String) {
   csv
   |> list.index_map(fn(line, ix) { #(ix + 2, line) })
   |> list.try_map(parse_input_line)
+}
+
+fn remove_empty_initial_grapheme(content: String) {
+  case string.pop_grapheme(content) {
+    Ok(#(first, _)) -> {
+      case first {
+        // Somehow we could have an invisible space
+        "﻿" -> string.drop_start(content, 1)
+        _ -> content
+      }
+    }
+    Error(_) -> content
+  }
 }
 
 fn parse_input_line(
