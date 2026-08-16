@@ -147,7 +147,11 @@ fn get_float(row, attr) {
     |> result.replace_error("Couldn't find " <> attr)
     |> outcome.outcome,
   )
-  str |> parse_float
+
+  str
+  |> string.replace("$", "")
+  |> string.trim
+  |> parse_float
 }
 
 fn get_str(row, attr) {
@@ -163,7 +167,9 @@ fn get_date(row, attr) -> Outcome(date.Date, String) {
     |> outcome.outcome,
   )
 
-  date.parse(date_str)
+  date_str
+  |> string.trim
+  |> date.parse
 }
 
 fn parse_float(input: String) {
@@ -297,7 +303,7 @@ fn assert_no_duplicate_ids(transactions: List(Transaction)) {
   let duplicated =
     dict.filter(grouped, fn(_key, value) { list.length(value) > 1 })
 
-  case dict.size(duplicated) > 0 {
+  case dict.size(duplicated) == 0 {
     True -> Ok(transactions)
     False -> {
       let keys =

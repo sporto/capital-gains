@@ -14,6 +14,7 @@ pub fn parse(input: String) -> outcome.Outcome(Date, String) {
   date.parse(input, tempo.CustomDate("DD/MM/YYYY"))
   |> result.or(date.parse(input, tempo.CustomDate("D/MM/YYYY")))
   |> result.or(date.parse(input, tempo.CustomDate("D/M/YYYY")))
+  |> result.or(date.parse(input, tempo.CustomDate("YYYY-MM-DD")))
   |> result.map_error(describe_date_parse_error)
   |> outcome.outcome
   |> outcome.context("When parsing " <> input)
